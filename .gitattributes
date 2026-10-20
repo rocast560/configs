@@ -1,0 +1,2 @@
+# The tmux files run on Linux, where CRLF line endings break sh and tmux
+tmux/** text eol=lf

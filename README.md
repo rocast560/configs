@@ -1,10 +1,11 @@
 # configs
 
-My Neovim and psmux configs for Windows.
+My Neovim and psmux configs for Windows, plus a tmux config for Linux that matches the psmux one.
 
 ```
 nvim/    Neovim config (init.lua + vim.pack lockfile)
 psmux/   psmux config and the two PowerShell scripts it calls
+tmux/    tmux config for Linux, with the same bindings as psmux
 ```
 
 The live config locations are junctions into this repo, so editing a config edits the repo. Commit from here.
@@ -38,26 +39,45 @@ Make sure `~/.psmux.conf`, `~/.psmuxrc` and `~/.tmux.conf` don't exist. psmux re
 
 The first time Neovim starts, it clones the plugins and installs the Tree-sitter parsers.
 
+## Setup on Linux (tmux)
+
+Needs tmux 3.2 or newer. The copy binding uses `load-buffer -w`, which arrived in 3.2.
+
+```sh
+git clone https://github.com/rocast560/configs.git ~/configs
+mkdir -p ~/.config
+ln -s ~/configs/tmux ~/.config/tmux
+```
+
+Remove any old `~/.tmux.conf`. tmux loads it as well as `~/.config/tmux/tmux.conf`, so its settings would mix with these.
+
+`prefix + C` copies to the system clipboard through the terminal (OSC 52), which works over SSH in most modern terminals. For terminals without OSC 52, such as GNOME Terminal, install `wl-clipboard` (Wayland) or `xclip` (X11) and the script uses that as well.
+
 ## Neovim
 
 - catppuccin mocha with Tree-sitter highlight groups, falling back to `habamax` if the plugin fails to load
 - Tree-sitter parsers: cpp, c, python, lua, vim, vimdoc, markdown, markdown_inline, json, bash
 - Tree-sitter highlighting, indentation and folding for any filetype that has a parser, with folds open by default
 
-## psmux
+## psmux and tmux
 
-The prefix is the default `Ctrl-b`.
+Both use the same bindings. The prefix is the default `Ctrl-b`.
 
 | Keys               | Action                                             |
 | ------------------ | -------------------------------------------------- |
 | `v` / `s`          | Split side by side / top and bottom, in the current folder |
 | `h` `j` `k` `l`    | Move between panes                                 |
 | `H` `J` `K` `L`    | Resize pane by 5 (repeatable)                      |
-| `y`                | Toggle synchronized input across panes (`sync.ps1`) |
+| `y`                | Toggle synchronized input across panes             |
 | `Y`                | Turn synchronized input off                        |
-| `C`                | Copy the whole pane history to the clipboard (`copyall.ps1`) |
+| `C`                | Copy the whole pane history to the clipboard       |
 | `r`                | Reload the config                                  |
 | `S`                | Session and window picker                          |
 | `Tab`              | Last window                                        |
 
 A red **SYNC** label shows on the right of the status bar while panes are synchronized. Scrollback is 100,000 lines. Windows and panes are numbered from 1, and windows renumber when one closes.
+
+The two versions differ only in how `y` and `C` are implemented:
+
+- `y`: psmux runs `sync.ps1` to toggle. tmux toggles an on/off option when it's given no value, so it needs no script.
+- `C`: psmux runs `copyall.ps1`, and tmux runs `copyall.sh`, which also tries `wl-copy` or `xclip`.
