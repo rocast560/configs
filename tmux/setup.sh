@@ -191,11 +191,12 @@ if tmux has-session 2>/dev/null; then
 fi
 
 # tmux needs the terminal on stdin, but stdin here is the script, and tmux
-# refuses /dev/tty, so open the terminal's real device (/dev/pts/N)
+# refuses /dev/tty, so open the terminal's real device (/dev/pts/N). It must
+# be read-write (<>): tmux also draws the screen through this stdin.
 if [ -t 2 ]; then
     term=$(tty <&2)
     say "starting tmux"
-    exec tmux new-session -A -s main <"$term"
+    exec tmux new-session -A -s main <>"$term"
 fi
 say "done. Run tmux to start it."
 TMUX_SETUP
