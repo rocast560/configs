@@ -5,7 +5,7 @@ My Neovim and psmux configs for Windows, plus a tmux config for Linux that match
 ```
 nvim/    Neovim config (init.lua + vim.pack lockfile)
 psmux/   psmux config and the two PowerShell scripts it calls
-tmux/    tmux config for Linux, with the same bindings as psmux
+tmux/    tmux config for Linux, with the same bindings as psmux, plus setup.sh to install it
 ```
 
 The live config locations are junctions into this repo, so editing a config edits the repo. Commit from here.
@@ -40,6 +40,30 @@ Make sure `~/.psmux.conf`, `~/.psmuxrc` and `~/.tmux.conf` don't exist. psmux re
 The first time Neovim starts, it clones the plugins and installs the Tree-sitter parsers.
 
 ## Setup on Linux (tmux)
+
+### Quick setup
+
+Paste this into a terminal on any Linux machine:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/rocast560/configs/main/tmux/setup.sh | sh
+```
+
+With wget instead of curl: `wget -qO- https://raw.githubusercontent.com/rocast560/configs/main/tmux/setup.sh | sh`
+
+With neither: open [`tmux/setup.sh`](tmux/setup.sh), click **Copy raw file** and paste the whole file into bash, zsh or sh. In fish, use the curl line.
+
+The script:
+
+1. Installs tmux if it's missing, with apt, dnf, yum, pacman, zypper, apk or xbps. It uses sudo or doas when you aren't root.
+2. Writes `~/.config/tmux/tmux.conf` and `copyall.sh`. An existing file with different contents is kept as `<name>.bak-<time>`, and an old `~/.tmux.conf` is moved aside the same way.
+3. Reloads the config if you're already in tmux. If you're not, it starts tmux in a session called `main`, or reattaches to it.
+
+Run it as yourself, not with sudo, or the config goes into root's home folder.
+
+`setup.sh` has its own copy of `tmux.conf` and `copyall.sh`, so update it when you change either file.
+
+### Manual setup
 
 Needs tmux 3.2 or newer. The copy binding uses `load-buffer -w`, which arrived in 3.2.
 
