@@ -75,7 +75,7 @@ ln -s ~/configs/tmux ~/.config/tmux
 
 Remove any old `~/.tmux.conf`. tmux loads it as well as `~/.config/tmux/tmux.conf`, so its settings would mix with these.
 
-`prefix + C` copies to the system clipboard through the terminal (OSC 52), which works over SSH in most modern terminals. For terminals without OSC 52, such as GNOME Terminal, install `wl-clipboard` (Wayland) or `xclip` (X11) and the script uses that as well.
+`prefix + C` copies to the system clipboard through the terminal (OSC 52), which works over SSH in most modern terminals. For terminals without OSC 52, such as GNOME Terminal, install `wl-clipboard` (Wayland) or `xclip` (X11) and the script uses that as well. On macOS it also copies with `pbcopy`, so it works in Terminal.app.
 
 ## Neovim
 
@@ -104,4 +104,4 @@ A red **SYNC** label shows on the right of the status bar while panes are synchr
 The two versions differ only in how `y` and `C` are implemented:
 
 - `y`: psmux runs `sync.ps1` to toggle. tmux toggles an on/off option when it's given no value, so it needs no script.
-- `C`: psmux runs `copyall.ps1`, and tmux runs `copyall.sh`, which also tries `wl-copy` or `xclip`.
+- `C`: psmux runs `copyall.ps1`, and tmux runs `copyall.sh`, which also tries `pbcopy`, `wl-copy` or `xclip`.
