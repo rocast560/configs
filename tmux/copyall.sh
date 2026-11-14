@@ -6,8 +6,10 @@ text=$(tmux capture-pane -p -J -S - -t "$1")
 # which also works over SSH
 printf '%s' "$text" | tmux load-buffer -w -
 
-# terminals without OSC 52 (e.g. GNOME Terminal) need a clipboard tool
-if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy >/dev/null; then
+# terminals without OSC 52 (e.g. GNOME Terminal, macOS Terminal.app) need a clipboard tool
+if command -v pbcopy >/dev/null; then
+    printf '%s' "$text" | pbcopy
+elif [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy >/dev/null; then
     printf '%s' "$text" | wl-copy
 elif [ -n "$DISPLAY" ] && command -v xclip >/dev/null; then
     # xclip stays running to own the selection; detach its output so run-shell returns
