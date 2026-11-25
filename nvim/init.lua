@@ -15,7 +15,21 @@ vim.o.background = 'dark'
 local plugins_ok = pcall(vim.pack.add, {
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
   { src = 'https://github.com/catppuccin/nvim', name = 'catppuccin' },
+  { src = 'https://github.com/windwp/nvim-autopairs' },
 })
+
+-- ---------------------------------------------------------------- autopairs
+-- Typing { ( [ " ' inserts the closing pair, typing the closer just steps
+-- over it, and <CR> between {} opens an indented block:
+--   if (x) {|}  --<CR>-->  if (x) {
+--                            |
+--                          }
+-- check_ts uses Tree-sitter so quotes are not paired inside strings/comments.
+if plugins_ok then
+  pcall(function()
+    require('nvim-autopairs').setup({ check_ts = true })
+  end)
+end
 
 -- -------------------------------------------------------------- colourscheme
 -- The catppuccin plugin defines the @-prefixed Tree-sitter capture groups
